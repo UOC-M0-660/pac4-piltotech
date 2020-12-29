@@ -26,13 +26,13 @@ class ProfileViewModel(
         }
     }
 
-    fun clearDataoOnUnauthorized()
+    fun clearDataOnUnauthorized()
     {
-        repository.clearDataoOnUnauthorized()
+        repository.clearDataOnUnauthorized()
     }
 
-    fun clearDataoOnLogout()
+    fun clearDataOnLogout()
     {
-        repository.clearDataoOnLogout()
+        repository.clearDataOnLogout()
     }
 }

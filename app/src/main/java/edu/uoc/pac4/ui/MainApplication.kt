@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package edu.uoc.pac4.ui
 
 import android.app.Application

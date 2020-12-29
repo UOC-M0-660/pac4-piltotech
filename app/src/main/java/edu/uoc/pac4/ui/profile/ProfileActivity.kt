@@ -8,8 +8,6 @@ import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -18,7 +16,6 @@ import edu.uoc.pac4.ui.login.LoginActivity
 import edu.uoc.pac4.data.network.UnauthorizedException
 import edu.uoc.pac4.data.user.User
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.item_stream.view.*
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.text.NumberFormat
@@ -52,12 +49,12 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun getUserProfile() {
+    private fun getUserProfile() {
         progressBar.visibility = VISIBLE
         // Retrieve the Twitch User Profile using the API
         try {
             viewModel.getUser()
-            viewModel.user.observe(this, Observer { user ->
+            viewModel.user.observe(this, { user ->
                 // Success :)
                 // Update the UI with the user data
                 setUserInfo(user)
@@ -70,12 +67,12 @@ class ProfileActivity : AppCompatActivity() {
     }
 
 
-    private suspend fun updateUserDescription(description: String) {
+    private fun updateUserDescription(description: String) {
         progressBar.visibility = VISIBLE
         // Update the Twitch User Description using the API
         try {
             viewModel.updateUser(description)
-            viewModel.user.observe(this, Observer { user ->
+            viewModel.user.observe(this, { user ->
                 // Success :)
                 // Update the UI with the user data
                 setUserInfo(user)
@@ -107,7 +104,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun logout() {
         // Clear local session data
-        viewModel.clearDataoOnLogout()
+        viewModel.clearDataOnLogout()
         // Close this and all parent activities
         finishAffinity()
         // Open Login
@@ -116,15 +113,12 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun onUnauthorized() {
         // Clear local access token
-        viewModel.clearDataoOnUnauthorized()
+        viewModel.clearDataOnUnauthorized()
         // User was logged out, close screen and all parent screens and open login
         finishAffinity()
         startActivity(Intent(this, LoginActivity::class.java))
     }
 
-    private fun showError(text: String) {
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-    }
 
     // Override Action Bar Home button to just finish the Activity
     // not to re-launch the parent Activity (StreamsActivity)

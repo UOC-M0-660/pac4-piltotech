@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import edu.uoc.pac4.R
 import edu.uoc.pac4.data.network.UnauthorizedException
@@ -69,7 +68,7 @@ class StreamsActivity : AppCompatActivity() {
         try {
             viewModel.getStreams(cursor)
 
-            viewModel.streams.observe(this, Observer { result ->
+            viewModel.streams.observe(this, { result ->
                 // Success :)
                 Log.d("StreamsActivity", "Got Streams: $result")
 

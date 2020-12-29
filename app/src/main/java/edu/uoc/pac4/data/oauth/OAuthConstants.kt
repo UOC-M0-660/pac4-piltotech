@@ -1,3 +1,7 @@
+@file:Suppress("SpellCheckingInspection", "SpellCheckingInspection", "SpellCheckingInspection",
+    "SpellCheckingInspection", "SpellCheckingInspection"
+)
+
 package edu.uoc.pac4.data.oauth
 
 import java.util.*

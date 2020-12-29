@@ -9,8 +9,8 @@ interface UserRepository {
 
     suspend fun updateUser(description: String): User?
 
-    fun clearDataoOnUnauthorized()
+    fun clearDataOnUnauthorized()
 
-    fun clearDataoOnLogout()
+    fun clearDataOnLogout()
 
 }

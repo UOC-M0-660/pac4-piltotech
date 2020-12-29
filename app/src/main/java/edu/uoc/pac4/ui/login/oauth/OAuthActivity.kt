@@ -11,7 +11,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import edu.uoc.pac4.ui.LaunchActivity
 import edu.uoc.pac4.R
 import edu.uoc.pac4.data.network.Endpoints
@@ -33,7 +32,7 @@ class OAuthActivity : AppCompatActivity() {
         launchOAuthAuthorization()
     }
 
-    fun buildOAuthUri(): Uri {
+    private fun buildOAuthUri(): Uri {
         return Uri.parse(Endpoints.authorizationUrl)
             .buildUpon()
             .appendQueryParameter("client_id", OAuthConstants.clientID)
@@ -96,7 +95,7 @@ class OAuthActivity : AppCompatActivity() {
 
         viewModel.login(authorizationCode)
 
-        viewModel.loggedIn.observe(this, Observer { loggedIn ->
+        viewModel.loggedIn.observe(this, { loggedIn ->
             if (loggedIn) {
                 Log.d(tag, "Logged in")
             } else {

@@ -19,21 +19,20 @@ class RemoteDataSource (private val httpClient: HttpClient): RemoteData{
     /// Gets Access and Refresh Tokens on Twitch
     override suspend fun getTokens(authorizationCode: String): OAuthTokensResponse? {
         // Get Tokens from Twitch
-        try {
-            val response = httpClient
-                    .post<OAuthTokensResponse>(Endpoints.tokenUrl) {
-                        parameter("client_id", OAuthConstants.clientID)
-                        parameter("client_secret", OAuthConstants.clientSecret)
-                        parameter("code", authorizationCode)
-                        parameter("grant_type", "authorization_code")
-                        parameter("redirect_uri", OAuthConstants.redirectUri)
-                    }
+        return try {
 
-            return response
+            httpClient
+                .post<OAuthTokensResponse>(Endpoints.tokenUrl) {
+                    parameter("client_id", OAuthConstants.clientID)
+                    parameter("client_secret", OAuthConstants.clientSecret)
+                    parameter("code", authorizationCode)
+                    parameter("grant_type", "authorization_code")
+                    parameter("redirect_uri", OAuthConstants.redirectUri)
+                }
 
         } catch (t: Throwable) {
             Log.w(tag, "Error Getting Access token", t)
-            return null
+            null
         }
     }
 
@@ -41,11 +40,10 @@ class RemoteDataSource (private val httpClient: HttpClient): RemoteData{
     @Throws(UnauthorizedException::class)
     override suspend fun getStreams(cursor: String?): StreamsResponse? {
         try {
-            val response = httpClient
+            return httpClient
                     .get<StreamsResponse>(Endpoints.streamsUrl) {
                         cursor?.let { parameter("after", it) }
                     }
-            return response
         } catch (t: Throwable) {
             Log.w(tag, "Error getting streams", t)
             // Try to handle error

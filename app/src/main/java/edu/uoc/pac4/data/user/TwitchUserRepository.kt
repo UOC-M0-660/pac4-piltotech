@@ -2,7 +2,6 @@ package edu.uoc.pac4.data.user
 
 
 import edu.uoc.pac4.data.datasources.LocalData
-import edu.uoc.pac4.data.datasources.LocalDataSource
 import edu.uoc.pac4.data.datasources.RemoteData
 
 
@@ -23,12 +22,12 @@ class TwitchUserRepository(
         return remoteData.updateUserDescription(description)
     }
 
-    override fun clearDataoOnUnauthorized()
+    override fun clearDataOnUnauthorized()
     {
         localData.clearAccessToken()
     }
 
-    override fun clearDataoOnLogout()
+    override fun clearDataOnLogout()
     {
         localData.clearAccessToken()
         localData.clearRefreshToken()

@@ -11,7 +11,6 @@ import edu.uoc.pac4.data.streams.StreamsRepository
 import edu.uoc.pac4.data.streams.TwitchStreamsRepository
 import edu.uoc.pac4.data.user.TwitchUserRepository
 import edu.uoc.pac4.data.user.UserRepository
-import io.ktor.client.*
 import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.module
 
