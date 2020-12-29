@@ -6,6 +6,10 @@ import androidx.lifecycle.viewModelScope
 import edu.uoc.pac4.data.oauth.AuthenticationRepository
 import kotlinx.coroutines.launch
 
+
+
+
+
 /**
  * Created by alex on 11/21/20.
  */
@@ -14,12 +18,11 @@ import kotlinx.coroutines.launch
 // you can connect to it from the LaunchActivity and use it
 // or just remove it
 class LaunchViewModel(
-    private val repository: AuthenticationRepository
+        private val repository: AuthenticationRepository
 ) : ViewModel() {
 
     // Live Data
     val isUserAvailable = MutableLiveData<Boolean>()
-
 
     // Public function that can be called from the view (Activity)
     fun getUserAvailability() {

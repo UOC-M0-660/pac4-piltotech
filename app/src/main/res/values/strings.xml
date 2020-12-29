@@ -5,6 +5,7 @@
     <string name="activity_oauth_title">Login with Twitch</string>
     <string name="activity_streams_title">Streams</string>
     <string name="activity_profile_title">Streams</string>
+    <string name="main_application_title">Main Application</string>
 
     <string name="menu_user">Profile</string>
 
@@ -16,10 +17,17 @@
         <item quantity="one">%s viewer</item>
         <item quantity="other">%s viewers</item>
     </plurals>
-    <string name="views_text">%d views</string>
+    <plurals name="views_text">
+        <item quantity="one">%s view</item>
+        <item quantity="other">%s views</item>
+    </plurals>
 
     <string name="error_oauth">Login with Twitch Failed</string>
     <string name="error_streams">Error getting Streams</string>
     <string name="error_profile">Error getting Profile</string>
     <string name="error_profile_update">Error updating profile</string>
+    <string name="stream_views_icon">Stream views icon</string>
+    <string name="stream_image">Stream image</string>
+    <string name="profile_image">Profile image</string>
+    <string name="profile_views_icon">Profile views icon</string>
 </resources>

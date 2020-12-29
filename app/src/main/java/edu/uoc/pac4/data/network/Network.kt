@@ -2,9 +2,10 @@ package edu.uoc.pac4.data.network
 
 import android.content.Context
 import android.util.Log
+import edu.uoc.pac4.data.datasources.LocalDataSource
 import edu.uoc.pac4.data.oauth.OAuthTokensResponse
 import edu.uoc.pac4.data.oauth.OAuthConstants
-import edu.uoc.pac4.data.SessionManager
+//import edu.uoc.pac4.data.SessionManager
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.*
@@ -56,13 +57,13 @@ object Network {
             // Add OAuth Feature
             install(OAuthFeature) {
                 getToken = {
-                    val accessToken = SessionManager(context).getAccessToken() ?: ""
+                    val accessToken = LocalDataSource(context).getAccessToken() ?: ""
                     Log.d(TAG, "Adding Bearer header with token $accessToken")
                     accessToken
                 }
                 refreshToken = {
                     // Remove expired access token
-                    SessionManager(context).clearAccessToken()
+                    LocalDataSource(context).clearAccessToken()
                     // Launch token refresh request
                     launchTokenRefresh(context)
                 }
@@ -77,7 +78,7 @@ object Network {
     }
 
     private suspend fun launchTokenRefresh(context: Context) {
-        val sessionManager = SessionManager(context)
+        val sessionManager = LocalDataSource(context)
         // Get Refresh Token
         sessionManager.getRefreshToken()?.let { refreshToken ->
             try {
