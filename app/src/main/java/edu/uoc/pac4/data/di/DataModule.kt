@@ -11,7 +11,7 @@ import edu.uoc.pac4.data.streams.StreamsRepository
 import edu.uoc.pac4.data.streams.TwitchStreamsRepository
 import edu.uoc.pac4.data.user.TwitchUserRepository
 import edu.uoc.pac4.data.user.UserRepository
-import org.koin.core.qualifier.StringQualifier
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 /**
@@ -20,18 +20,14 @@ import org.koin.dsl.module
 
 val dataModule = module {
 
-    single<LocalData>(StringQualifier("local_data")) { LocalDataSource(get()) }
-    single<RemoteData>(StringQualifier("remote_data")) {
-        val http = Network.createHttpClient(get())
-        RemoteDataSource(http) }
+    single { Network.createHttpClient(androidContext()) }
 
+    single<LocalData> { LocalDataSource(get()) }
+    single<RemoteData> { RemoteDataSource(get()) }
 
-    single<AuthenticationRepository> {
-        OAuthAuthenticationRepository(get(StringQualifier("local_data")), get(StringQualifier("remote_data"))) }
+    single<AuthenticationRepository> { OAuthAuthenticationRepository(get(), get()) }
 
-    single<StreamsRepository> {
-        TwitchStreamsRepository(get(StringQualifier("local_data")), get(StringQualifier("remote_data"))) }
+    single<StreamsRepository> { TwitchStreamsRepository(get(), get()) }
 
-    single<UserRepository> {
-        TwitchUserRepository(get(StringQualifier("local_data")), get(StringQualifier("remote_data"))) }
+    single<UserRepository> { TwitchUserRepository(get(), get()) }
 }

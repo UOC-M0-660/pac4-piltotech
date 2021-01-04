@@ -47,6 +47,14 @@ class ProfileActivity : AppCompatActivity() {
             // Logout
             logout()
         }
+
+        viewModel.user.observe(this, { user ->
+            // Success :)
+            // Update the UI with the user data
+            setUserInfo(user)
+            // Hide Loading
+            progressBar.visibility = GONE
+        })
     }
 
     private fun getUserProfile() {
@@ -54,13 +62,6 @@ class ProfileActivity : AppCompatActivity() {
         // Retrieve the Twitch User Profile using the API
         try {
             viewModel.getUser()
-            viewModel.user.observe(this, { user ->
-                // Success :)
-                // Update the UI with the user data
-                setUserInfo(user)
-                // Hide Loading
-                progressBar.visibility = GONE
-            })
         } catch (t: UnauthorizedException) {
             onUnauthorized()
         }
@@ -72,13 +73,6 @@ class ProfileActivity : AppCompatActivity() {
         // Update the Twitch User Description using the API
         try {
             viewModel.updateUser(description)
-            viewModel.user.observe(this, { user ->
-                // Success :)
-                // Update the UI with the user data
-                setUserInfo(user)
-                // Hide Loading
-                progressBar.visibility = GONE
-            })
         } catch (t: UnauthorizedException) {
             onUnauthorized()
         }
@@ -91,10 +85,10 @@ class ProfileActivity : AppCompatActivity() {
         // Avatar Image
         user.profileImageUrl?.let {
             Glide.with(this)
-                .load(user.getSizedImage(it, 128, 128))
-                .centerCrop()
-                .transform(CircleCrop())
-                .into(imageView)
+                    .load(user.getSizedImage(it, 128, 128))
+                    .centerCrop()
+                    .transform(CircleCrop())
+                    .into(imageView)
         }
         // Views
         val formattedViews = NumberFormat.getInstance().format(user.viewCount)
