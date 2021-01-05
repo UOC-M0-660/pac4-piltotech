@@ -1,5 +1,5 @@
 package edu.uoc.pac4.data
-/*
+
 import android.content.Context
 
 /**
@@ -51,4 +51,4 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
-}*/
+}

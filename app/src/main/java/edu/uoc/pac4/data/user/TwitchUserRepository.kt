@@ -1,35 +1,28 @@
 package edu.uoc.pac4.data.user
 
 
-import edu.uoc.pac4.data.datasources.LocalData
-import edu.uoc.pac4.data.datasources.RemoteData
-
-
 /**
  * Created by alex on 11/21/20.
  */
 
 class TwitchUserRepository(
-        private val localData: LocalData,
-        private val remoteData: RemoteData
+        private val dataSource: UserData
 ) : UserRepository {
 
     override suspend fun getUser(): User? {
-        return remoteData.getUser()
+        return dataSource.getUser()
     }
 
     override suspend fun updateUser(description: String): User? {
-        return remoteData.updateUserDescription(description)
+        return dataSource.updateUserDescription(description)
     }
 
-    override fun clearDataOnUnauthorized()
-    {
-        localData.clearAccessToken()
+    override fun clearDataOnUnauthorized() {
+        dataSource.clearAccessToken()
     }
 
-    override fun clearDataOnLogout()
-    {
-        localData.clearAccessToken()
-        localData.clearRefreshToken()
+    override fun clearDataOnLogout() {
+        dataSource.clearAccessToken()
+        dataSource.clearRefreshToken()
     }
 }

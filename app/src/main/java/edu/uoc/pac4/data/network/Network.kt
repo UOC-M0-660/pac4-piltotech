@@ -2,10 +2,9 @@ package edu.uoc.pac4.data.network
 
 import android.content.Context
 import android.util.Log
-import edu.uoc.pac4.data.datasources.LocalDataSource
+import edu.uoc.pac4.data.SessionManager
 import edu.uoc.pac4.data.oauth.OAuthTokensResponse
 import edu.uoc.pac4.data.oauth.OAuthConstants
-//import edu.uoc.pac4.data.SessionManager
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.*
@@ -57,13 +56,13 @@ object Network {
             // Add OAuth Feature
             install(OAuthFeature) {
                 getToken = {
-                    val accessToken = LocalDataSource(context).getAccessToken() ?: ""
+                    val accessToken = SessionManager(context).getAccessToken() ?: ""
                     Log.d(TAG, "Adding Bearer header with token $accessToken")
                     accessToken
                 }
                 refreshToken = {
                     // Remove expired access token
-                    LocalDataSource(context).clearAccessToken()
+                    SessionManager(context).clearAccessToken()
                     // Launch token refresh request
                     launchTokenRefresh(context)
                 }
@@ -78,18 +77,18 @@ object Network {
     }
 
     private suspend fun launchTokenRefresh(context: Context) {
-        val sessionManager = LocalDataSource(context)
+        val sessionManager = SessionManager(context)
         // Get Refresh Token
         sessionManager.getRefreshToken()?.let { refreshToken ->
             try {
                 // Launch Refresh Request
                 val response =
-                    createHttpClient(context).post<OAuthTokensResponse>(Endpoints.tokenUrl) {
-                        parameter("client_id", OAuthConstants.clientID)
-                        parameter("client_secret", OAuthConstants.clientSecret)
-                        parameter("refresh_token", refreshToken)
-                        parameter("grant_type", "refresh_token")
-                    }
+                        createHttpClient(context).post<OAuthTokensResponse>(Endpoints.tokenUrl) {
+                            parameter("client_id", OAuthConstants.clientID)
+                            parameter("client_secret", OAuthConstants.clientSecret)
+                            parameter("refresh_token", refreshToken)
+                            parameter("grant_type", "refresh_token")
+                        }
                 Log.d(TAG, "Got new Access token ${response.accessToken}")
                 // Save new Tokens
                 sessionManager.saveAccessToken(response.accessToken)
