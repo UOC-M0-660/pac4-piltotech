@@ -1,5 +1,5 @@
 package edu.uoc.pac4.data
-
+/*
 import android.util.Log
 import edu.uoc.pac4.data.network.Endpoints
 import edu.uoc.pac4.data.oauth.OAuthConstants
@@ -71,7 +71,7 @@ class TwitchApiService(private val httpClient: HttpClient) {
     suspend fun getUser(): User? {
         try {
             val response = httpClient
-                .get<UsersResponse>(Endpoints.usersUrl)
+                    .get<UsersResponse>(Endpoints.usersUrl)
 
             return response.data?.firstOrNull()
         } catch (t: Throwable) {
@@ -115,4 +115,4 @@ class TwitchApiService(private val httpClient: HttpClient) {
             }
         }
     }
-}
+}*/

@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <application
+        android:name="edu.uoc.pac4.ui.MainApplication"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
@@ -33,5 +34,6 @@
             android:label="@string/activity_profile_title"
             android:parentActivityName="edu.uoc.pac4.ui.streams.StreamsActivity" />
     </application>
+
 
 </manifest>

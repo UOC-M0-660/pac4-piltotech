@@ -8,28 +8,25 @@ import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import edu.uoc.pac4.R
-import edu.uoc.pac4.data.network.Network
 import edu.uoc.pac4.ui.login.LoginActivity
-import edu.uoc.pac4.data.SessionManager
-import edu.uoc.pac4.data.TwitchApiService
 import edu.uoc.pac4.data.network.UnauthorizedException
 import edu.uoc.pac4.data.user.User
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.coroutines.launch
+import org.koin.android.viewmodel.ext.android.viewModel
+import java.text.NumberFormat
 
 class ProfileActivity : AppCompatActivity() {
 
-    private val TAG = "ProfileActivity"
-
-    private val twitchApiService = TwitchApiService(Network.createHttpClient(this))
+    private val viewModel: ProfileViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_profile)
         // Get User Profile
         lifecycleScope.launch {
@@ -50,42 +47,32 @@ class ProfileActivity : AppCompatActivity() {
             // Logout
             logout()
         }
+
+        viewModel.user.observe(this, { user ->
+            // Success :)
+            // Update the UI with the user data
+            setUserInfo(user)
+            // Hide Loading
+            progressBar.visibility = GONE
+        })
     }
 
-    private suspend fun getUserProfile() {
+    private fun getUserProfile() {
         progressBar.visibility = VISIBLE
         // Retrieve the Twitch User Profile using the API
         try {
-            twitchApiService.getUser()?.let { user ->
-                // Success :)
-                // Update the UI with the user data
-                setUserInfo(user)
-            } ?: run {
-                // Error :(
-                showError(getString(R.string.error_profile))
-            }
-            // Hide Loading
-            progressBar.visibility = GONE
+            viewModel.getUser()
         } catch (t: UnauthorizedException) {
             onUnauthorized()
         }
     }
 
 
-    private suspend fun updateUserDescription(description: String) {
+    private fun updateUserDescription(description: String) {
         progressBar.visibility = VISIBLE
         // Update the Twitch User Description using the API
         try {
-            twitchApiService.updateUserDescription(description)?.let { user ->
-                // Success :)
-                // Update the UI with the user data
-                setUserInfo(user)
-            } ?: run {
-                // Error :(
-                showError(getString(R.string.error_profile))
-            }
-            // Hide Loading
-            progressBar.visibility = GONE
+            viewModel.updateUser(description)
         } catch (t: UnauthorizedException) {
             onUnauthorized()
         }
@@ -98,19 +85,20 @@ class ProfileActivity : AppCompatActivity() {
         // Avatar Image
         user.profileImageUrl?.let {
             Glide.with(this)
-                .load(user.getSizedImage(it, 128, 128))
-                .centerCrop()
-                .transform(CircleCrop())
-                .into(imageView)
+                    .load(user.getSizedImage(it, 128, 128))
+                    .centerCrop()
+                    .transform(CircleCrop())
+                    .into(imageView)
         }
         // Views
-        viewsText.text = getString(R.string.views_text, user.viewCount)
+        val formattedViews = NumberFormat.getInstance().format(user.viewCount)
+        viewsText.text = resources.getQuantityString(R.plurals.views_text, user.viewCount, formattedViews)
+
     }
 
     private fun logout() {
         // Clear local session data
-        SessionManager(this).clearAccessToken()
-        SessionManager(this).clearRefreshToken()
+        viewModel.clearDataOnLogout()
         // Close this and all parent activities
         finishAffinity()
         // Open Login
@@ -119,15 +107,12 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun onUnauthorized() {
         // Clear local access token
-        SessionManager(this).clearAccessToken()
+        viewModel.clearDataOnUnauthorized()
         // User was logged out, close screen and all parent screens and open login
         finishAffinity()
         startActivity(Intent(this, LoginActivity::class.java))
     }
 
-    private fun showError(text: String) {
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-    }
 
     // Override Action Bar Home button to just finish the Activity
     // not to re-launch the parent Activity (StreamsActivity)
